@@ -33,15 +33,20 @@ def get_pool() -> ConnectionPool:
         min_size=1,
         max_size=10,
         open=True,
+        configure=_configure,
         kwargs={
             "row_factory": dict_row,
             "autocommit": True,
             # Supabase poolers don't like server-side prepared statements.
             "prepare_threshold": None,
-            # pgvector lives in the "extensions" schema on Supabase.
-            "options": "-c search_path=public,extensions",
         },
     )
+
+
+def _configure(conn: Connection) -> None:
+    # pgvector may live in the "extensions" schema on Supabase. Set this per
+    # connection (poolers can drop startup "options").
+    conn.execute("set search_path = public, extensions")
 
 
 @contextmanager

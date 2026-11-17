@@ -168,7 +168,8 @@ def generate_paper(paper_id: str) -> None:
         ctx = Context(get_llm(), str(bp.textbook_id), bp.class_level, bp.subject, bp.board,
                       ChunkUsage(), threading.Lock(), [])
         groups = plan_groups(bp, chapters)
-        with ThreadPoolExecutor(max_workers=4) as pool:
+        # 3 parallel AI calls: fast, but gentle on Gemini free-tier rate limits
+        with ThreadPoolExecutor(max_workers=3) as pool:
             results = list(pool.map(lambda g: _run_group(ctx, g), groups))
         questions = [q for qs in results for q in qs]
         if not questions:

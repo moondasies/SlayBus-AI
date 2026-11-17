@@ -28,7 +28,8 @@ EMBED_BATCH = 100  # Gemini accepts up to 100 texts per embed call
 RETRYABLE = {408, 429, 500, 502, 503, 504}
 
 
-def _with_retries(fn: Callable[[], T], what: str, attempts: int = 5) -> T:
+def _with_retries(fn: Callable[[], T], what: str, attempts: int = 6) -> T:
+    """Retry rate limits (429) and server hiccups with exponential backoff (2s -> 60s)."""
     delay = 2.0
     for i in range(attempts):
         try:
@@ -42,7 +43,7 @@ def _with_retries(fn: Callable[[], T], what: str, attempts: int = 5) -> T:
                 raise LLMError(f"Gemini {what} failed: {e}") from e
             log.warning("Gemini %s error %s, retrying in %.0fs", what, e, delay)
         time.sleep(delay)
-        delay = min(delay * 2, 30)
+        delay = min(delay * 2, 60)
     raise LLMError(f"Gemini {what} failed")  # pragma: no cover
 
 

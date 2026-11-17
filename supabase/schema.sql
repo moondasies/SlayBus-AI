@@ -5,7 +5,7 @@
 -- =====================================================================
 
 -- pgvector lets Postgres store embeddings and search them by similarity.
-create extension if not exists vector;
+create extension if not exists vector with schema extensions;
 
 -- ---------------------------------------------------------------------
 -- profiles: one row per teacher, same id as auth.users
