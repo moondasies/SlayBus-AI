@@ -55,8 +55,13 @@ create table if not exists public.textbooks (
                 check (status in ('uploaded', 'processing', 'ready', 'failed')),
   error_message text,                         -- filled when status = 'failed'
   page_count    int,
+  progress      int not null default 0,       -- 0-100 while processing
+  chapter_method text,                        -- bookmarks | headings | ai | whole_book
   created_at    timestamptz not null default now()
 );
+-- upgrades for databases created from an older version of this file
+alter table public.textbooks add column if not exists progress int not null default 0;
+alter table public.textbooks add column if not exists chapter_method text;
 create index if not exists textbooks_user_id_idx on public.textbooks (user_id);
 
 -- ---------------------------------------------------------------------
