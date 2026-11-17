@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     local_storage_dir: str = "./storage"
     cors_origins: str = "http://localhost:3000"
     dev_auth: bool = False
-    max_upload_mb: int = 100
+    max_upload_mb: int = 50
 
     # Chunking (tokens are estimated as characters / 4)
     chunk_tokens: int = 600

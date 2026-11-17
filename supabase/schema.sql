@@ -248,8 +248,9 @@ $$;
 -- so each teacher can only touch their own folder.
 -- =====================================================================
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('textbooks', 'textbooks', false, 104857600, array['application/pdf'])
-on conflict (id) do nothing;
+values ('textbooks', 'textbooks', false, 52428800, array['application/pdf'])  -- 50 MB (Supabase free-plan limit)
+on conflict (id) do update
+  set public = false, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
 
 drop policy if exists "own textbook files read" on storage.objects;
 create policy "own textbook files read" on storage.objects

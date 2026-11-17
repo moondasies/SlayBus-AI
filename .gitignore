@@ -21,3 +21,7 @@ node_modules/
 
 # local uploaded files (STORAGE_BACKEND=local)
 agent/storage/
+
+# frontend test output
+frontend/e2e/screenshots/
+*.tsbuildinfo
